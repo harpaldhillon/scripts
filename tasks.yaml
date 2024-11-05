@@ -1,0 +1,32 @@
+---
+- name: Create directories for holding Red Hat public keys
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0755'
+    owner: "harpal"
+    group: "harpal"
+  loop:
+    - /etc/containers
+    - /etc/pki/rpm-gpg
+    - /etc/containers/registries.d
+
+- name: copy policy files to podman host
+  copy:
+    src: files/policy.json
+    dest: /etc/containers/policy.json
+    mode: '0644'
+    owner: "harpal"
+    group: "harpal"
+
+
+- name: copy signature server files to podman host
+  copy:
+    src: "files/{{ item }}"
+    dest: /etc/containers/registries.d/
+    mode: '0644'
+    owner: "harpal"
+    group: "harpal"
+  loop:
+  - registry.access.redhat.com.yaml
+  - registry.redhat.io.yaml
